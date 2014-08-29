@@ -3,12 +3,11 @@ var express = require('express'),
     crypto = require('crypto'),
     util = require('util'),
     request = require('request'),
-    sqlite3 = require('sqlite3').verbose(),
     github = require('github'),
+    pg = require('pg'),
     csv = require('csv');
 
 var app,
-    db,
     config,
     handler;
 
@@ -37,7 +36,6 @@ handler = {};
 // Basic DB for storing access tokens
 //
 
-db = new sqlite3.Database('accessTokens.db');
 
 //
 // Express Setup/Config
@@ -227,9 +225,23 @@ handler.setGitHubInfo = function (req, res, token, err, response, body) {
     req.session.token = token;
 
     // Add student info to the database
-    db.serialize(function () {
-        db.run('INSERT INTO tokens VALUES (?, ?)', data.login, token);
-    });
+    //db.serialize(function () {
+      //  db.run('INSERT INTO tokens VALUES (?, ?)', data.login, token);
+    //});
+
+    console.log("saving %s %s",data.login,token);
+    /*
+      pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        client.query('INSERT INTO tokens VALUES ($1, $2)', [data.login, token ], function(err, result) {
+          done();
+          if (err)
+           { console.error(err); response.send("Error " + err); }
+          else
+              console.log("saved....");
+
+        });
+      });
+    */
 
     return res.redirect('/add');
 };
