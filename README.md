@@ -58,6 +58,14 @@ heroku create
 heroku addons:add heroku-postgresql:dev
 heroku ps:scale web=1
 
+__config__
+heroku config:set TOKEN="yourtoken"
+heroku config:set CLIENT_ID="yourclient"
+heroku config:set CLIENT_SECRET="etc"
+heroku config:set SESSION_SECRET="etc"
+
+for local testing add to .env
+
 __push changes and open app__
 git push heroku master
 heroku open
