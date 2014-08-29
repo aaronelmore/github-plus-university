@@ -5,8 +5,7 @@ var express = require('express'),
     request = require('request'),
     sqlite3 = require('sqlite3').verbose(),
     github = require('github'),
-    csv = require('csv'),
-    secret = require('./secret');
+    csv = require('csv');
 
 var app,
     db,
@@ -57,7 +56,7 @@ app.set('views', __dirname + '/views');
 
 // Setup sessions
 app.use(express.cookieParser());
-app.use(express.session({secret: secret.SESSION_SECRET}));
+app.use(express.session({secret: process.env.SESSION_SECRET}));
 
 // Server up static
 app.use(express.static(__dirname + '/public'))
@@ -79,7 +78,7 @@ app.get('/', function (req, res) {
         state = buf.toString('hex');
 
         // Provided by GitHub for API access
-        context['client_id'] = secret.CLIENT_ID;
+        context['client_id'] = process.env.CLIENT_ID;
         context['state'] = encodeURIComponent(state);
 
         // Set in session for checking later
@@ -150,7 +149,7 @@ handler.initGitHubAPI = function () {
 
     gh.authenticate({
         type: 'oauth',
-        token: secret.TOKEN
+        token: process.env.TOKEN
     });
 
     return gh;
@@ -160,8 +159,8 @@ handler.requestAccessToken = function (req, res, code) {
     var options = {
         method: 'POST',
         qs: {
-            client_id: secret.CLIENT_ID,
-            client_secret: secret.CLIENT_SECRET,
+            client_id: process.env.CLIENT_ID,
+            client_secret: process.env.CLIENT_SECRET,
             code: code,
         },
         headers: {
