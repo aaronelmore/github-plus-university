@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>6.830/6.814</h1>
+    <h1>ComS 342</h1>
 
     <p>
         Hey there, {{ name }}.

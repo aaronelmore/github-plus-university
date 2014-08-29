@@ -30,6 +30,14 @@ last_name, first_name, university_id
 
 check out the sample [students.csv][students]
 
+## Setup GitHubAPI
+
+Account -> Applications
+- Request new application
+- Generate new token
+
+Add both to the secret.js
+
 ## Running
 
 To run it, just run:
@@ -40,6 +48,25 @@ $ node server.js
 
 or you might want to look into a tool like [forever][forever] which ensures that
 your server won't crash if it has an unexpected error.
+
+## Heroku
+
+https://devcenter.heroku.com/articles/getting-started-with-nodejs#provision-a-database
+
+__Set up and create__
+heroku create
+heroku addons:add heroku-postgresql:dev
+heroku ps:scale web=1
+
+__push changes and open app__
+git push heroku master
+heroku open
+
+__Test Locally__
+npm install
+foreman start web
+
+
 
 ## License
 

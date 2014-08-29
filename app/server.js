@@ -20,10 +20,10 @@ var app,
 
 config = {
     // Course Org
-    org: 'ComS342-ISU',
+    org: '6.830',
 
     // Main Team
-    student_team: '634635',
+    student_team: '111111',
 
     // Prefix for teams
     team_prefix: 'Students: ',
@@ -203,7 +203,7 @@ handler.retrieveAccessToken = function (req, res, err, response, body) {
         },
         headers: {
             'Accept': 'application/json',
-            'User-Agent': 'ComS 342 Course Bot',
+            'User-Agent': 'Course Bot',
         },
     };
 

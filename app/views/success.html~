@@ -14,7 +14,7 @@
     </p>
 
     <p>
-        <a href="https://github.com/MIT-DB-Class/">View the rest of the ComS 342 repositories.</a>
+        <a href="https://github.com/ComS342-ISU/">View the rest of the ComS 342 repositories.</a>
     </p>
 
 {% endblock %}

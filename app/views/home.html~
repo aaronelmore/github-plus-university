@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1></h1>
+    <h1>ComS 342</h1>
 
     <p>
         This will start the process of adding your GitHub account to the
-        <a href="https://github.com/orgs/MIT-DB-Class">6.830/6.814 organization</a>.
+        <a href="https://github.com/ComS342-ISU">ComS 342 organization</a>.
     </p>
 
     <p>
