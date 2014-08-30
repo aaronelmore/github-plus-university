@@ -313,7 +313,7 @@ handler.checkMembership = function (req, res, gh, err, ret) {
     }
 
     // Getting an error means they aren't a member
-    if (!err) {
+    if (err) {
         return res.render('error', {
             error: 'failed checking membership',
         });
