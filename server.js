@@ -18,7 +18,7 @@ var app,
 
 config = {
     // Course Org
-    org: '6.830',
+    org: 'MIT-DB-Class',
 
     // Main Team
     student_team: '111111',
@@ -143,6 +143,12 @@ handler.initGitHubAPI = function () {
 
     gh = new github({
         version: '3.0.0',
+        // optional
+        debug: true,
+        protocol: "https",
+        //host: "github.com",
+       // pathPrefix: "/api/v3", // for some GHEs
+        timeout: 5000
     });
 
     gh.authenticate({
@@ -292,9 +298,8 @@ handler.addStudent = function (req, res, student) {
     var gh = {};
 
     gh.student = student;
-    console.log(" * init GH Api");
     gh.api = handler.initGitHubAPI();
-    console.log(" * get memb");
+    console.log("Checking org.getMember org:%s user:%s",config.org,student.username);
     gh.api.orgs.getMember({
         org: config.org,
         user: student.username,
@@ -313,7 +318,7 @@ handler.checkMembership = function (req, res, gh, err, ret) {
     }
 
     // Getting an error means they aren't a member
-    if (err) {
+    if (!err) {
         return res.render('error', {
             error: 'failed checking membership',
         });
