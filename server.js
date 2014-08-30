@@ -270,7 +270,7 @@ handler.validateNetID = function (req, res, netID) {
     student.name = req.session.name;
     student.token = req.session.token;
     student.netID = netID;
-
+    console.log("Validating NetId: us:%s name%s", student.username, student.name);
     csv().from.path('./students.csv', {
         columns: ['last_name', 'first_name', 'username']
     }).on('record', function (row, i) {
@@ -292,9 +292,9 @@ handler.addStudent = function (req, res, student) {
     var gh = {};
 
     gh.student = student;
-
+    console.log(" * init GH Api");
     gh.api = handler.initGitHubAPI();
-
+    console.log(" * get memb");
     gh.api.orgs.getMember({
         org: config.org,
         user: student.username,
