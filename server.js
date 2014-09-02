@@ -3,11 +3,13 @@ var express = require('express'),
     crypto = require('crypto'),
     util = require('util'),
     request = require('request'),
+    sqlite3 = require('sqlite3').verbose(),
     github = require('github'),
-    pg = require('pg'),
-    csv = require('csv');
+    csv = require('csv'),
+    secret = require('./secret');
 
 var app,
+    db,
     config,
     handler;
 
@@ -21,10 +23,10 @@ config = {
     org: 'MIT-DB-Class',
 
     // Main Team
-    student_team: '111111',
+    student_team: '992453',
 
     // Prefix for teams
-    team_prefix: 'Students: ',
+    team_prefix: 'Students ',
 
     // Prefix for student's repo
     repo_prefix: 'hw-answers-',
@@ -36,6 +38,7 @@ handler = {};
 // Basic DB for storing access tokens
 //
 
+//db = new sqlite3.Database('accessTokens.db');
 
 //
 // Express Setup/Config
@@ -54,7 +57,7 @@ app.set('views', __dirname + '/views');
 
 // Setup sessions
 app.use(express.cookieParser());
-app.use(express.session({secret: process.env.SESSION_SECRET}));
+app.use(express.session({secret: secret.SESSION_SECRET}));
 
 // Server up static
 app.use(express.static(__dirname + '/public'))
@@ -76,7 +79,7 @@ app.get('/', function (req, res) {
         state = buf.toString('hex');
 
         // Provided by GitHub for API access
-        context['client_id'] = process.env.CLIENT_ID;
+        context['client_id'] = secret.CLIENT_ID;
         context['state'] = encodeURIComponent(state);
 
         // Set in session for checking later
@@ -143,17 +146,13 @@ handler.initGitHubAPI = function () {
 
     gh = new github({
         version: '3.0.0',
-        // optional
+        
         debug: true,
-        protocol: "https",
-        //host: "github.com",
-       // pathPrefix: "/api/v3", // for some GHEs
-        timeout: 5000
     });
 
     gh.authenticate({
         type: 'oauth',
-        token: process.env.TOKEN
+        token: secret.TOKEN
     });
 
     return gh;
@@ -163,8 +162,8 @@ handler.requestAccessToken = function (req, res, code) {
     var options = {
         method: 'POST',
         qs: {
-            client_id: process.env.CLIENT_ID,
-            client_secret: process.env.CLIENT_SECRET,
+            client_id: secret.CLIENT_ID,
+            client_secret: secret.CLIENT_SECRET,
             code: code,
         },
         headers: {
@@ -206,7 +205,7 @@ handler.retrieveAccessToken = function (req, res, err, response, body) {
         },
         headers: {
             'Accept': 'application/json',
-            'User-Agent': 'Course Bot',
+            'User-Agent': 'ComS 342 Course Bot',
         },
     };
 
@@ -231,22 +230,10 @@ handler.setGitHubInfo = function (req, res, token, err, response, body) {
     req.session.token = token;
 
     // Add student info to the database
-    //db.serialize(function () {
-      //  db.run('INSERT INTO tokens VALUES (?, ?)', data.login, token);
-    //});
-
-    console.log("saving %s %s",data.login,token);
     /*
-      pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        client.query('INSERT INTO tokens VALUES ($1, $2)', [data.login, token ], function(err, result) {
-          done();
-          if (err)
-           { console.error(err); response.send("Error " + err); }
-          else
-              console.log("saved....");
-
-        });
-      });
+    db.serialize(function () {
+        db.run('INSERT INTO tokens VALUES (?, ?)', data.login, token);
+    });
     */
 
     return res.redirect('/add');
@@ -276,7 +263,7 @@ handler.validateNetID = function (req, res, netID) {
     student.name = req.session.name;
     student.token = req.session.token;
     student.netID = netID;
-    console.log("Validating NetId: us:%s name%s", student.username, student.name);
+
     csv().from.path('./students.csv', {
         columns: ['last_name', 'first_name', 'username']
     }).on('record', function (row, i) {
@@ -298,8 +285,9 @@ handler.addStudent = function (req, res, student) {
     var gh = {};
 
     gh.student = student;
+
     gh.api = handler.initGitHubAPI();
-    console.log("Checking org.getMember org:%s user:%s",config.org,student.username);
+
     gh.api.orgs.getMember({
         org: config.org,
         user: student.username,
@@ -323,7 +311,7 @@ handler.checkMembership = function (req, res, gh, err, ret) {
             error: 'failed checking membership',
         });
     }
-
+    console.log("About to addd to team");
     gh.api.orgs.createTeam({
         org: config.org,
         name: config.team_prefix + gh.student.netID,
@@ -332,7 +320,10 @@ handler.checkMembership = function (req, res, gh, err, ret) {
 };
 
 handler.addStudentToOwnTeam = function (req, res, gh, err, ret) {
+
+    console.log("Adding student  to own team");
     if (err) {
+        console.log("errrrr");
         return res.render('error', {
             error: 'failed creating a team',
         });
@@ -341,7 +332,18 @@ handler.addStudentToOwnTeam = function (req, res, gh, err, ret) {
     console.log('Created team: ' + util.inspect(ret));
 
     gh.team = ret.id;
-
+    console.log('adding student %s to team %s', gh.student.username, gh.team);
+    
+    /*Un comment to get list of students
+    gh.api.orgs.getTeams({
+        org: config.org
+    
+    }, function(err,ret){
+        console.log("teams");
+        console.log(ret);
+        if (err) console.log(err);
+    });
+    */
     gh.api.orgs.addTeamMember({
         id: gh.team,
         user: gh.student.username,
@@ -357,6 +359,8 @@ handler.addUserToStudentsTeam = function (req, res, gh, err, ret) {
 
     console.log('Added student to own team: ' + util.inspect(ret));
 
+    console.log('');
+    console.log('adding student %s to team id %s', gh.student.username,config.student_team);
     gh.api.orgs.addTeamMember({
         id: config.student_team,
         user: gh.student.username,
@@ -364,6 +368,7 @@ handler.addUserToStudentsTeam = function (req, res, gh, err, ret) {
 };
 
 handler.createSolutionsRepo = function (req, res, gh, err, ret) {
+    console.log("create solutions repo");
     if (err) {
         return res.render('error', {
             error: 'failed adding to team',
