@@ -82,18 +82,6 @@ app.get('/db', function (request, response) {
   });
 })
 
-app.get('/dbi', function (request, response) {
-  pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-    var r1 = 're1';
-    client.query("insert into students values($1, $2, $3)",['c1','c2',r1 ], function(err, result) {
-      done();
-      if (err)
-       { console.error(err); response.send("Error " + err); }
-      else
-       { response.send(result.rows); }
-    });
-  });
-})
 
 // Home:
 // Shows the sign in & join button
@@ -429,6 +417,16 @@ handler.apiFinishSetup = function (req, res, gh, err, ret) {
     context = gh.student;
     context.repo = config.repo_prefix + gh.student.netID;
 
+    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+      client.query("insert into students values($1, $2, $3)",
+        [req.session.username, req.session.token, context.repo], function(err, result) {
+        done();
+        if (err)
+         { console.error(err);  }
+        else
+         { }
+      });
+    });
     return res.render('success', context);
 };
 
