@@ -69,7 +69,7 @@ app.use(express.bodyParser());
 // Routing
 //
 
-
+/*Debug to get DB contents
 app.get('/db', function (request, response) {
   pg.connect(process.env.DATABASE_URL, function(err, client, done) {
     client.query('SELECT * FROM students', function(err, result) {
@@ -81,7 +81,7 @@ app.get('/db', function (request, response) {
     });
   });
 })
-
+*/
 
 // Home:
 // Shows the sign in & join button
