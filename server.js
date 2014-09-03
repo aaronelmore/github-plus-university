@@ -419,7 +419,7 @@ handler.apiFinishSetup = function (req, res, gh, err, ret) {
 
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
       client.query("insert into students values($1, $2, $3)",
-        [req.session.username, req.session.token, context.repo], function(err, result) {
+        [req.session.username, req.session.token, context.repo, gh.student.netID, gh.student.name], function(err, result) {
         done();
         if (err)
          { console.error(err);  }
