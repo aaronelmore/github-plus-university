@@ -3,7 +3,7 @@ var express = require('express'),
     crypto = require('crypto'),
     util = require('util'),
     request = require('request'),
-    sqlite3 = require('sqlite3').verbose(),
+    pg = require('pg'),
     github = require('github'),
     csv = require('csv'),
     secret = require('./secret');
@@ -68,6 +68,22 @@ app.use(express.bodyParser());
 //
 // Routing
 //
+
+
+app.get('/db', function (request, response) {
+  console.log("ttt");
+  console.log(process.env.DATABASE_URL); 
+
+  pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+    client.query('SELECT * FROM students', function(err, result) {
+      done();
+      if (err)
+       { console.error(err); response.send("Error " + err); }
+      else
+       { response.send(result.rows); }
+    });
+  });
+})
 
 // Home:
 // Shows the sign in & join button
@@ -255,8 +271,8 @@ handler.validateNetID = function (req, res, netID) {
     // Trim whitespace just in case
     netID = netID.trim();
 
-    if (netID.indexOf('@iastate.edu') !== -1) {
-        netID = netID.substring(0, netID.length - '@iastate.edu'.length);
+    if (netID.indexOf('@') !== -1) {
+        netID = netID.substring(0, netID.length - '@'.length);
     }
 
     student.username = req.session.username;
