@@ -71,11 +71,20 @@ app.use(express.bodyParser());
 
 
 app.get('/db', function (request, response) {
-  console.log("ttt");
-  console.log(process.env.DATABASE_URL); 
-
   pg.connect(process.env.DATABASE_URL, function(err, client, done) {
     client.query('SELECT * FROM students', function(err, result) {
+      done();
+      if (err)
+       { console.error(err); response.send("Error " + err); }
+      else
+       { response.send(result.rows); }
+    });
+  });
+})
+
+app.get('/dbi', function (request, response) {
+  pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+    client.query('insert into students values("ada","dhka","r1")', function(err, result) {
       done();
       if (err)
        { console.error(err); response.send("Error " + err); }
