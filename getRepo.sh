@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 die () {
         echo >&2 "$@"
             exit 1
@@ -20,4 +21,4 @@ echo "Getting repo: $repo for tag: $tag at time $due $time"
 #http://stackoverflow.com/questions/6990484/git-checkout-by-date
 git clone git@github.com:MIT-DB-Class/$repo.git 
 cd $repo
-git checkout '$tag@{$due $time}'
+git checkout `git rev-list -n 1 --before="$due $time" $tag`
