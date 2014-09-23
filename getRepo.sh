@@ -27,7 +27,7 @@ cd $prefix$repo
 if git rev-list -n 1 --before="$due $time" $tag ; then
     echo 'has lab'
 else
-    echo $repo >> ../missing$tag.txt
+    echo $repo@mit.edu, >> ../missing$tag.txt
     die "no lab"
 fi
 
