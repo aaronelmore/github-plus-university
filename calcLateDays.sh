@@ -10,6 +10,7 @@ labs=(
  "lab2"
  "lab3"
  "lab4" 
+ "lab5" 
 )
 
 #example studentid lab1 2014-12-12 00:15:00
@@ -21,7 +22,7 @@ prefix='hw-answers-'
 
 if [ ! -f "$outfile" ]; then
     echo "File does not exist"
-    line="Name,ID"
+    line="LastName, FirstName, ID"
     for tag in ${labs[@]}; do
         line="$line,$tag-submission"
     done
