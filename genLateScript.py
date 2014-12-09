@@ -6,9 +6,9 @@ gitRepos = []
 with open('students.csv','r') as studcsv:
     rdr = csv.DictReader(studcsv)
     for r in rdr:
-        gitRepos.append('./getRepo.sh %s lab3 2014-11-02 00:15:00\n'% r['UniversityID'])
+        gitRepos.append('./calcLateDays.sh %s "%s,%s" submitted.csv\n'% (r['UniversityID'], r['LastName'],r['FirstName']))
 
-with open('run3.sh','w') as r:
+with open('submited.sh','w') as r:
     for l in gitRepos:
         r.write(l)
 

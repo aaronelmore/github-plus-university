@@ -26,6 +26,20 @@ cd $prefix$repo
 
 if git rev-list -n 1 --before="$due $time" $tag ; then
     echo 'has lab'
+
+    if git checkout `git rev-list -n 1 --before="$due $time" $tag` ; then 
+        echo "Last commit :" >> info.txt
+        git log -1 --format="%cd" >> info.txt
+        #cp -r ../../test-simple-hw/test .
+        #cp -r ../../test-simple-hw/build.xml .
+        echo "System Test:" >> info.txt
+
+        ant systemtest >> info.txt
+        echo "Test:" >> info.txt
+        ant test >> info.txt
+
+        find test -type f -print0 | sort -z | xargs -0 sha1sum | sha1sum >> info.txt
+    fi
 else
     echo $repo@mit.edu, >> ../missing$tag.txt
     die "no lab"
