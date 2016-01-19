@@ -319,10 +319,7 @@ handler.addStudent = function (req, res, student) {
     console.log('adding student %s to student team id %s', gh.student.username,config.student_team);
 
 
-    gh.api.orgs.addTeamMembership({
-        id: config.student_team,
-        user: gh.student.username,
-    }, handler.studentAddedToStudents.bind(handler, req, res, gh));
+
 
     // gh.api.orgs.getMember({
     //     org: config.org,
@@ -346,25 +343,22 @@ handler.checkMembership = function (req, res, gh, err, ret) {
     console.log('Checked membership: ' + util.inspect(ret));
     console.log('Checked membership err: ' + util.inspect(err));
 
-    if (ret && ret.meta && ret.meta.status === '204 No Content') {
-        return res.render('error', {
-            error: 'already member',
-            repo: config.repo_prefix + gh.student.netID,
-        });
-    }
+
 
     // Getting an error means they aren't a member
     if (!err) {
-        return res.render('error', {
-            error: 'failed checking membership',
-        });
-    }
-    console.log("About to addd to team");
-    gh.api.orgs.createTeam({
-        org: config.org,
-        name: config.team_prefix + gh.student.netID,
-        permission: 'push',
-    }, handler.addStudentToOwnTeam.bind(handler, req, res, gh));
+      gh.api.orgs.addTeamMembership({
+          id: config.student_team,
+          user: gh.student.username,
+      }, handler.studentAddedToStudents.bind(handler, req, res, gh));
+    } else {
+      console.log("About to add to team");
+      gh.api.orgs.createTeam({
+          org: config.org,
+          name: config.team_prefix + gh.student.netID,
+          permission: 'push',
+      }, handler.addStudentToOwnTeam.bind(handler, req, res, gh));
+  }
 };
 
 handler.addStudentToOwnTeam = function (req, res, gh, err, ret) {
@@ -395,7 +389,7 @@ handler.addStudentToOwnTeam = function (req, res, gh, err, ret) {
     gh.api.orgs.addTeamMember({
         id: gh.team,
         user: gh.student.username,
-    }, handler.addUserToStudentsTeam.bind(handler, req, res, gh));
+    }, handler.createSolutionsRepo.bind(handler, req, res, gh));
 };
 
 handler.addUserToStudentsTeam = function (req, res, gh, err, ret) {
