@@ -317,7 +317,9 @@ handler.addStudent = function (req, res, student) {
 
 
     console.log('adding student %s to student team id %s', gh.student.username,config.student_team);
-    gh.api.orgs.addTeamMember({
+
+
+    gh.api.orgs.addTeamMembership({
         id: config.student_team,
         user: gh.student.username,
     }, handler.studentAddedToStudents.bind(handler, req, res, gh));
