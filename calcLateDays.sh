@@ -9,8 +9,8 @@ labs=(
  "lab1"
  "lab2"
  "lab3"
- "lab4" 
- "lab5" 
+ "lab4"
+ "lab5"
 )
 
 #example studentid lab1 2014-12-12 00:15:00
@@ -32,7 +32,7 @@ fi
 line="$name, $repo"
 echo "Getting repo: $prefix$repo "
 #http://stackoverflow.com/questions/6990484/git-checkout-by-date
-git clone git@github.com:MIT-DB-Class/$prefix$repo.git 
+git clone git@github.com:UCHI-DB/$prefix$repo.git
 cd $prefix$repo
 
 for tag in ${labs[@]}; do
@@ -46,11 +46,9 @@ for tag in ${labs[@]}; do
 
 
     else
-        #echo $repo@mit.edu, >> ../missing$tag.txt
         #echo "no lab $tag"
         line="$line, MISSING"
         #die "no lab"
     fi
 done
 echo "$line" >> ../$outfile
-

@@ -20,14 +20,14 @@ prefix='hw-answers-'
 echo "Getting repo: $prefix$repo for tag: $tag at time $due $time"
 
 #http://stackoverflow.com/questions/6990484/git-checkout-by-date
-git clone git@github.com:MIT-DB-Class/$prefix$repo.git 
+git clone git@github.com:UCHI-DB/$prefix$repo.git 
 cd $prefix$repo
 
 
 if git rev-list -n 1 --before="$due $time" $tag ; then
     echo 'has lab'
 
-    if git checkout `git rev-list -n 1 --before="$due $time" $tag` ; then 
+    if git checkout `git rev-list -n 1 --before="$due $time" $tag` ; then
         echo "Last commit :" >> info.txt
         git log -1 --format="%cd" >> info.txt
         #cp -r ../../test-simple-hw/test .
@@ -41,13 +41,12 @@ if git rev-list -n 1 --before="$due $time" $tag ; then
         find test -type f -print0 | sort -z | xargs -0 sha1sum | sha1sum >> info.txt
     fi
 else
-    echo $repo@mit.edu, >> ../missing$tag.txt
+    echo $repo@uchicago.edu, >> ../missing$tag.txt
     die "no lab"
 fi
 
-#if git checkout `git rev-list -n 1 --before="$due $time" $tag` ; then 
+#if git checkout `git rev-list -n 1 --before="$due $time" $tag` ; then
 #    echo 'checked out'
 #else
 #    echo 'failed'
 #fi
-

@@ -20,7 +20,7 @@ var app,
 
 config = {
     // Course Org
-    org: 'MIT-DB-Class',
+    org: 'UCHI-DB',
 
     // Main Team
     student_team: '992453',
@@ -160,7 +160,7 @@ handler.initGitHubAPI = function () {
 
     gh = new github({
         version: '3.0.0',
-        
+
         debug: true,
     });
 
@@ -347,11 +347,11 @@ handler.addStudentToOwnTeam = function (req, res, gh, err, ret) {
 
     gh.team = ret.id;
     console.log('adding student %s to team %s', gh.student.username, gh.team);
-    
+
     /*Un comment to get list of students
     gh.api.orgs.getTeams({
         org: config.org
-    
+
     }, function(err,ret){
         console.log("teams");
         console.log(ret);
