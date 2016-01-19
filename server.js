@@ -316,15 +316,14 @@ handler.addStudent = function (req, res, student) {
     */
 
 
-    console.log('adding student %s to student team id %s', gh.student.username,config.student_team);
 
 
 
-
-    // gh.api.orgs.getMember({
-    //     org: config.org,
-    //     user: student.username,
-    // }, handler.checkMembership.bind(handler, req, res, gh));
+    console.log("Checking membership first");
+    gh.api.orgs.getMember({
+        org: config.org,
+        user: student.username,
+    }, handler.checkMembership.bind(handler, req, res, gh));
 }
 
 handler.studentAddedToStudents = function (req, res, gh, err, ret) {
@@ -347,12 +346,14 @@ handler.checkMembership = function (req, res, gh, err, ret) {
 
     // Getting an error means they aren't a member
     if (!err) {
+      console.log('adding student %s to student team id %s', gh.student.username,config.student_team);
+
       gh.api.orgs.addTeamMembership({
           id: config.student_team,
           user: gh.student.username,
       }, handler.studentAddedToStudents.bind(handler, req, res, gh));
     } else {
-      console.log("About to add to team");
+      console.log("Student in group. About to add to team");
       gh.api.orgs.createTeam({
           org: config.org,
           name: config.team_prefix + gh.student.netID,
