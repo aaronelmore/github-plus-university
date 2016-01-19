@@ -304,10 +304,22 @@ handler.addStudent = function (req, res, student) {
 
     gh.api = handler.initGitHubAPI();
 
-    gh.api.orgs.getMember({
-        org: config.org,
-        user: student.username,
-    }, handler.checkMembership.bind(handler, req, res, gh));
+    gh.api.orgs.getTeams({
+        org: config.org
+
+    }, function(err,ret){
+        console.log("teams");
+        console.log(ret);
+        if (err) console.log(err);
+    });
+
+
+    //gh.api.orgs
+    // 
+    // gh.api.orgs.getMember({
+    //     org: config.org,
+    //     user: student.username,
+    // }, handler.checkMembership.bind(handler, req, res, gh));
 }
 
 handler.checkMembership = function (req, res, gh, err, ret) {
