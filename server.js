@@ -258,6 +258,7 @@ handler.setGitHubInfo = function (req, res, token, err, response, body) {
 handler.validateNetID = function (req, res, netID) {
     var student = {},
         found = false;
+    console.log("Validating netID");
 
     if (!netID) {
         return res.render('add', {
@@ -268,11 +269,11 @@ handler.validateNetID = function (req, res, netID) {
 
     // Trim whitespace just in case
     netID = netID.trim();
-
     if (netID.indexOf('@') !== -1) {
         netID = netID.substring(0, netID.length - '@'.length);
     }
 
+    console.log("NetID : " + netID);
     student.username = req.session.username;
     student.name = req.session.name;
     student.token = req.session.token;
@@ -296,6 +297,7 @@ handler.validateNetID = function (req, res, netID) {
 };
 
 handler.addStudent = function (req, res, student) {
+    console.log("Adding student " + student)
     var gh = {};
 
     gh.student = student;
