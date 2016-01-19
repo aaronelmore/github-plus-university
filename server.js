@@ -23,7 +23,7 @@ config = {
     org: 'UCHI-DB',
 
     // Main Team
-    student_team: '992453',
+    student_team: '1899271',
 
     // Prefix for teams
     team_prefix: 'Students ',
@@ -304,6 +304,7 @@ handler.addStudent = function (req, res, student) {
 
     gh.api = handler.initGitHubAPI();
 
+    /*Un comment to get list of students
     gh.api.orgs.getTeams({
         org: config.org
 
@@ -312,15 +313,32 @@ handler.addStudent = function (req, res, student) {
         console.log(ret);
         if (err) console.log(err);
     });
+    */
 
 
-    //gh.api.orgs
-    // 
+    console.log('adding student %s to student team id %s', gh.student.username,config.student_team);
+    gh.api.orgs.addTeamMember({
+        id: config.student_team,
+        user: gh.student.username,
+    }, handler.studentAddedToStudents.bind(handler, req, res, gh));
+
     // gh.api.orgs.getMember({
     //     org: config.org,
     //     user: student.username,
     // }, handler.checkMembership.bind(handler, req, res, gh));
 }
+
+handler.studentAddedToStudents = function (req, res, gh, err, ret) {
+    if (err) {
+        return res.render('error', {
+            error: 'failed adding to Students',
+        });
+    }
+
+    console.log('Added student to students: ' + util.inspect(ret));
+    return res.render('added', { });
+};
+
 
 handler.checkMembership = function (req, res, gh, err, ret) {
     console.log('Checked membership: ' + util.inspect(ret));
