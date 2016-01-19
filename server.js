@@ -297,7 +297,7 @@ handler.validateNetID = function (req, res, netID) {
 };
 
 handler.addStudent = function (req, res, student) {
-    console.log("Adding student " + student)
+    console.log("Adding student :" + student)
     var gh = {};
 
     gh.student = student;
