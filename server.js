@@ -345,7 +345,7 @@ handler.checkMembership = function (req, res, gh, err, ret) {
 
 
     // Getting an error means they aren't a member
-    if (!err) {
+    if (err) {
       console.log('adding student %s to student team id %s', gh.student.username,config.student_team);
 
       gh.api.orgs.addTeamMembership({
