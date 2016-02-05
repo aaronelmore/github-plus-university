@@ -30,8 +30,9 @@ if git rev-list -n 1 --before="$due $time" $tag ; then
     if git checkout `git rev-list -n 1 --before="$due $time" $tag` ; then
         echo "Last commit :" >> info.txt
         git log -1 --format="%cd" >> info.txt
-        #cp -r ../../test-simple-hw/test .
-        #cp -r ../../test-simple-hw/build.xml .
+        cp -r ../../test-simple-hw/test .
+        cp -r ../../test-simple-hw/build.xml .
+        cp -r ../../test-simple-hw/lib .
         echo "System Test:" >> info.txt
 
         ant systemtest >> info.txt

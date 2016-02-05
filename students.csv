@@ -1,4 +1,4 @@
-LastName,FirstName,UniversityID
-Asimov,Isaac,asimov
-Barker,Bob,bbarker
-Newton,Isaac,newton
+LastName,FirstName,UniversityID,Hash
+Asimov,Isaac,asimov,
+Barker,Bob,bbarker,
+Newton,Isaac,newton,
